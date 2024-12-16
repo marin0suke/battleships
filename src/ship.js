@@ -10,7 +10,7 @@ export default class Ship {
 
     hit() {
         if (this.health <= 0) {
-            throw new Error("Health is somehow below 0 :( ");
+            throw new Error("Health is somehow below 0 :(");
         } else {
             this.health -= 1;
         }
