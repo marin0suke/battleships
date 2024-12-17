@@ -4,30 +4,32 @@ export default class Gameboard {
     constructor(size = 10) {
         this.size = size;
         this.grid = this.initializeBoard();
+        this.missedShots = [];
     }
 
-    initializeBoard() {
+    initializeBoard() { // relevant to have its own method to make boards smaller is want to.
         const rows = "ABCDEFGHIJ".slice(0, this.size).split(""); // alphabet for corresponding rows. slice to custom size if specified. split to arrays so Array.from works.
         const board = rows.map((row) => Array.from({ length: this.size }, (_, col) => ({ // practiced using Array.from instead of nested loop to generate grid.
             coordinate: `${row}${col + 1}`,
-            occupied: false, 
-            clicked: false 
+            occupied: null, 
+            clicked: false,
+            reserved: false 
             }))
         )
         return board;
     }
 
-    placeShip(length, coordinate, orientation) {
-        const rowIndex = coordinate.charCodeAt(0) - 65; // ascii E to 4.
-        const colIndex = parseInt(coordinate.slice(1)) - 1; // "5" to 4.
+    placeShip(ship, coordinate, orientation) { // takes a specific ship instance now.
+        const rowIndex = coordinate.charCodeAt(0) - 65;
+        const colIndex = parseInt(coordinate.slice(1)) - 1; 
 
         if (orientation !== "horizontal" && orientation !== "vertical") {
             throw new Error("Orientation must be 'horizontal' or 'vertical'");
         }
 
         if ( // check if ship placement will be out of bounds. index + length of ship can't be more than the size of grid.
-            (colIndex + length > this.size && orientation === "horizontal") || 
-            (rowIndex + length > this.size && orientation === "vertical") 
+            (colIndex + ship.length > this.size && orientation === "horizontal") || 
+            (rowIndex + ship.length > this.size && orientation === "vertical") 
         ) {
             throw new Error("Ship placement is out of bounds");
         }
@@ -35,7 +37,7 @@ export default class Gameboard {
         // next, separate checking for overlap from actually placing the ship.
         //placing each part of the ship in a loop might cause partially placed ships.
 
-        for (let i = 0; i < length; i++) { // checking each cell for length of ship we will place.
+        for (let i = 0; i < ship.length; i++) { // checking each cell for length of ship we will place.
             const targetRow = orientation === "horizontal" ? rowIndex : rowIndex + i;
             const targetCol = orientation === "horizontal" ? colIndex + i : colIndex;
 
@@ -44,12 +46,16 @@ export default class Gameboard {
             }
         }
         
-        for (let i = 0; i < length; i++) {
+        for (let i = 0; i < ship.length; i++) {
             const targetRow = orientation === "horizontal" ? rowIndex : rowIndex + i;
             const targetCol = orientation === "horizontal" ? colIndex + i : colIndex;
-    
-            this.grid[targetRow][targetCol].occupied = true;
+            
+            console.log(`Placing ship at: Row ${targetRow}, Col ${targetCol}`);
+            console.log(`Occupied Cell: `, this.grid[targetRow][targetCol]);
+            this.grid[targetRow][targetCol].occupied = ship;
         }
     }
+
+    
 }
 
