@@ -1,5 +1,3 @@
-import Gameboard from "./gameBoard";
-
 export default class Player {
     constructor(board, name = "You", isComputer = false) {
         if (!board) throw new Error("Gameboard input required");
@@ -23,9 +21,10 @@ export default class Player {
         return opponentBoard.receiveAttack(coordinate);
     }
 
-    isDefeated() { // NF: win/loss condition. 
-        //call areAllShipsSunk on this players board.
-    }
+    isDefeated() { // NF: win/loss condition. call areAllShipsSunk on this players board.
+        return this.board.allShipsSunk();
+    }   
+
     
     // need to generate computer moves - random move generator? get all possible moves on the board (not clicked).
 }
