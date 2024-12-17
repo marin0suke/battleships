@@ -4,7 +4,8 @@ export default class Gameboard {
     constructor(size = 10) {
         this.size = size;
         this.grid = this.initializeBoard();
-        this.missedShots = [];
+        this.missedShots = []; // tracks all so can display easily.
+        this.ships = []; // tracks all ship instances on board.
     }
 
     initializeBoard() { // relevant to have its own method to make boards smaller is want to.
@@ -19,7 +20,7 @@ export default class Gameboard {
         return board;
     }
 
-    placeShip(ship, coordinate, orientation) { // takes a specific ship instance now.
+    placeShip(ship, coordinate, orientation) { 
         const rowIndex = coordinate.charCodeAt(0) - 65;
         const colIndex = parseInt(coordinate.slice(1)) - 1; 
 
@@ -53,31 +54,37 @@ export default class Gameboard {
             console.log(`Placing ship at: Row ${targetRow}, Col ${targetCol}`);
             console.log(`Occupied Cell: `, this.grid[targetRow][targetCol]);
             this.grid[targetRow][targetCol].occupied = ship;
+            this.ships.push(ship);
         }
     }
 
     receiveAttack(coordinate) {
-        //take letter coord and convert it to a pair.
-         const rowIndex = coordinate.charCodeAt(0) - 65;
-         const colIndex = parseInt(coordinate.slice(1)) - 1; 
- 
-         const targetCell = this.grid[rowIndex][colIndex]; // verbose so save.
- 
-         if (targetCell.clicked) {
-             throw new Error("This coordinate has already been attacked");
-         }
- 
-         targetCell.clicked = true; 
- 
-         if (targetCell.occupied) {
-             targetCell.occupied.hit(); 
-             return "Hit!"; 
-         } else {
-             this.missedShots.push(coordinate);
-             return "Miss!"; 
-         }
+    //take letter coord and convert it to a pair.
+        const rowIndex = coordinate.charCodeAt(0) - 65;
+        const colIndex = parseInt(coordinate.slice(1)) - 1; 
+
+        const targetCell = this.grid[rowIndex][colIndex]; // verbose so save.
+
+        if (targetCell.clicked) {
+            throw new Error("This coordinate has already been attacked");
+        }
+
+        targetCell.clicked = true; 
+
+        if (targetCell.occupied) {
+            targetCell.occupied.hit(); 
+            return "Hit!"; 
+        } else {
+            this.missedShots.push(coordinate);
+            return "Miss!"; 
+        }
     }
 
-    
+    // next adding allShipsSunk() function - to add this, this means Gameboard will be responsible for tracking ships.
+    // would have to create new class to deal with all ship placement and tracking (assignment brief excludes this)
+
+    areAllShipsSunk() {
+        return this.ships.every((ship) => ship.isSunk());
+    }
 }
 

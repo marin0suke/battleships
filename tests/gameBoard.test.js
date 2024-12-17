@@ -77,3 +77,34 @@ test("receiveAttack takes coordinates and invokes hit() function on correct ship
     expect(board.grid[0][0].clicked).toBe(true);
     expect(ship.health).toBe(1);
 })
+
+//allShipsSunk
+
+test("areAllShipsSunk returns true if all ships on board are sunk", () => {
+    const board = new Gameboard();
+    const ship1 = new Ship(1);
+    const ship2 = new Ship(2);
+
+    board.placeShip(ship1, "A1", "horizontal");
+    board.placeShip(ship2, "D4", "horizontal");
+    
+    ship1.hit(); // manually invoke hit - using receiveAttack here violate unit test format.
+    ship2.hit();
+    ship2.hit();
+    
+    expect(board.areAllShipsSunk()).toBe(true);
+})
+
+test("areAllShipsSunk returns false if not all ships are sunk", () => {
+    const board = new Gameboard();
+    const ship1 = new Ship(1);
+    const ship2 = new Ship(2);
+
+    board.placeShip(ship1, "A1", "horizontal");
+    board.placeShip(ship2, "D4", "horizontal");
+    
+    ship1.hit(); // manually invoke hit - using receiveAttack here violate unit test format.
+    ship2.hit();
+    
+    expect(board.areAllShipsSunk()).toBe(false);
+})
