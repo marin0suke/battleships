@@ -30,5 +30,30 @@ test("positionShips takes array of ship information from controller and applies 
 
     expect(board.grid[3][4].occupied).toBe(ship2); // D5
     expect(board.grid[4][4].occupied).toBe(ship2); // E5
-    
 })
+
+//makeMove
+
+test("makeMove interacts with and updates opponent board", () => {
+    const myBoard = new Gameboard();
+    const player1 = new Player(myBoard);
+
+    const opponentBoard = new Gameboard();
+    const opponent = new Player(opponentBoard);
+
+    const ship1 = new Ship(3);
+    const ship2 = new Ship(2);
+
+    const shipPositions = [
+        { ship: ship1, coordinate: "A1", orientation: "horizontal"},
+        { ship: ship2, coordinate: "D5", orientation: "vertical"},
+    ];
+
+    opponent.positionShips(shipPositions);
+
+    player1.makeMove("A4", opponentBoard); 
+
+    expect(opponentBoard.grid[0][3].clicked).toBe(true);
+})
+
+

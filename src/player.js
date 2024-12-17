@@ -1,4 +1,4 @@
-import Gameboard from "./gameBoard.js";
+import Gameboard from "./gameBoard";
 
 export default class Player {
     constructor(board, name = "You", isComputer = false) {
@@ -8,7 +8,7 @@ export default class Player {
         this.board = board;
     }
 
-    positionShips(shipPositions) { // called in controller. player places their ships on own board at start. accept array of positions.
+    positionShips(shipPositions) { // NF: game setup. called in controller. player places their ships on own board at start. accept array of positions.
         shipPositions.forEach(({ ship, coordinate, orientation }) => {
             try {
                 this.board.placeShip(ship, coordinate, orientation);
@@ -18,8 +18,16 @@ export default class Player {
         });
     }
 
+    makeMove(coordinate, opponentBoard) { // NF: gameplay. goal - call receiveAttack on opponentboard.
+        if (!opponentBoard) throw new Error("Opponent's board required to make a move");
+        return opponentBoard.receiveAttack(coordinate);
+    }
+
+    isDefeated() { // NF: win/loss condition. 
+        //call areAllShipsSunk on this players board.
+    }
     
-    
+    // need to generate computer moves - random move generator? get all possible moves on the board (not clicked).
 }
 
 //decide whether or not to have a new instance of Gameboard created with the Player - 
