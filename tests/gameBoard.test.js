@@ -68,3 +68,12 @@ test("receiveAttack takes coordinates and updates cell to be clicked(attacked)",
     board.receiveAttack("A1");
     expect(board.grid[0][0].clicked).toBe(true);
 })
+
+test("receiveAttack takes coordinates and invokes hit() function on correct ship", () => {
+    const board = new Gameboard();
+    const ship = new Ship(2);
+    board.placeShip(ship, "A1", "horizontal");
+    board.receiveAttack("A1");
+    expect(board.grid[0][0].clicked).toBe(true);
+    expect(ship.health).toBe(1);
+})

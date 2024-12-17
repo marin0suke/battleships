@@ -56,6 +56,28 @@ export default class Gameboard {
         }
     }
 
+    receiveAttack(coordinate) {
+        //take letter coord and convert it to a pair.
+         const rowIndex = coordinate.charCodeAt(0) - 65;
+         const colIndex = parseInt(coordinate.slice(1)) - 1; 
+ 
+         const targetCell = this.grid[rowIndex][colIndex]; // verbose so save.
+ 
+         if (targetCell.clicked) {
+             throw new Error("This coordinate has already been attacked");
+         }
+ 
+         targetCell.clicked = true; 
+ 
+         if (targetCell.occupied) {
+             targetCell.occupied.hit(); 
+             return "Hit!"; 
+         } else {
+             this.missedShots.push(coordinate);
+             return "Miss!"; 
+         }
+    }
+
     
 }
 
