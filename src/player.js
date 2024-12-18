@@ -19,6 +19,7 @@ export default class Player {
     makeMove(coordinate, opponentBoard) { // NF: gameplay. goal - call receiveAttack on opponentboard.
         if (!opponentBoard) throw new Error("Opponent's board required to make a move");
         return opponentBoard.receiveAttack(coordinate);
+
     }
 
     isDefeated() { // NF: win/loss condition. call areAllShipsSunk on this players board.
@@ -27,6 +28,7 @@ export default class Player {
 
     
     // need to generate computer moves - random move generator? get all possible moves on the board (not clicked).
+    //smart move generator - target adjacent cells after a hit. 
 }
 
 //decide whether or not to have a new instance of Gameboard created with the Player - 

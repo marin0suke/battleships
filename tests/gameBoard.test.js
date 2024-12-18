@@ -78,6 +78,14 @@ test("receiveAttack takes coordinates and invokes hit() function on correct ship
     expect(ship.health).toBe(1);
 })
 
+test("receiveAttack updates hit property on coordinate if ship is hit", () => {
+    const board = new Gameboard();
+    const ship = new Ship(3);
+    board.placeShip(ship, "A1", "horizontal");
+    board.receiveAttack("A1");
+    expect(board.grid[0][0].hit).toBe(true);
+})
+
 //allShipsSunk
 
 test("areAllShipsSunk returns true if all ships on board are sunk", () => {

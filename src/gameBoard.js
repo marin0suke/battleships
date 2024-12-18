@@ -11,6 +11,7 @@ export default class Gameboard {
         const board = rows.map((row) => Array.from({ length: this.size }, (_, col) => ({ // practiced using Array.from instead of nested loop to generate grid.
             coordinate: `${row}${col + 1}`,
             occupied: null, 
+            hit: false,
             clicked: false,
             reserved: false 
             }))
@@ -70,7 +71,8 @@ export default class Gameboard {
         targetCell.clicked = true; 
 
         if (targetCell.occupied) {
-            targetCell.occupied.hit(); 
+            targetCell.occupied.hit(); // invokes hit function
+            targetCell.hit = true; // updates hit prop on coordinate.
             return "Hit!"; 
         } else {
             this.missedShots.push(coordinate);
