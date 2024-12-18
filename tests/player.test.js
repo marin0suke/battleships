@@ -60,35 +60,29 @@ test("makeMove interacts with and updates opponent board", () => {
 //possibleMoves
 
 test("possibleMoves adds unclicked squares to moves array", () => {
-    const board1 = new Gameboard();
-    const player1 = new Player(board1);
+    const board = new Gameboard();
+    const player = new Player(board);
 
-    const board2 = new Gameboard();
-    const player2 = new Player(board2);
+    const expectedCoordinates = board.grid.flat().map(cell => cell.coordinate);
 
-    const expectedCoordinates = board2.grid.flat().map(cell => cell.coordinate);
-
-    const result = player1.possibleMoves(board2);
+    const result = player.possibleMoves(board);
 
     expect(result).toEqual(expect.arrayContaining(expectedCoordinates));
 })
 
 test("possibleMoves doesn't add clicked squares to moves array", () => {
-    const board1 = new Gameboard();
-    const player1 = new Player(board1);
+    const board = new Gameboard();
+    const player = new Player(board);
 
-    const board2 = new Gameboard();
-    const player2 = new Player(board2);
+    board.receiveAttack("A1");
+    board.receiveAttack("A2");
 
-    board2.receiveAttack("A1");
-    board2.receiveAttack("A2");
-
-    const expectedCoordinates = board2.grid
+    const expectedCoordinates = board.grid
         .flat()
         .filter(cell => !cell.clicked)
         .map(cell => cell.coordinate);
 
-    const result = player1.possibleMoves(board2);
+    const result = player.possibleMoves(board);
 
     expect(result).toEqual(expect.arrayContaining(expectedCoordinates));
 

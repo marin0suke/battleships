@@ -30,12 +30,10 @@ export default class Player {
     // choose the move from possibleMove (generate a coordinate) that will be passed into makeMove.
     // add smart move - if computer hits a ship, target adjacent squares. get info back from receiveAttack? (if hit). 
 
-    possibleMoves(opponentBoard) { // array of possible moves for the computer to make.
-        if (!opponentBoard) throw new Error("Opponent's board required to check possible moves");
-
+    possibleMoves() { // array of possible moves for the computer to make.
         const moves = [];
 
-        opponentBoard.grid.forEach((row) => {
+        this.board.grid.forEach((row) => {
             row.forEach((cell) => {
                 if (!cell.clicked) {
                     moves.push(cell.coordinate);
@@ -45,6 +43,12 @@ export default class Player {
 
         return moves;
     }     
+
+    generateMove(opponentBoard) {
+        if (!opponentBoard) throw new Error("Opponent's board required to generate move")
+
+        const moves = opponentBoard.possibleMoves
+    }
 
     // need to generate computer moves - random move generator? get all possible moves on the board (not clicked).
     //smart move generator - target adjacent cells after a hit. 
