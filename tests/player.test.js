@@ -90,3 +90,41 @@ test("possibleMoves doesn't add clicked squares to moves array", () => {
     expect(result).not.toContain("A2");
 })
 
+//generateMove 
+
+test("generateMove returns coordinate for a possible move", () => {
+    const board = new Gameboard();
+    const player1 = new Player(board);
+
+    const board2 = new Gameboard();
+    const player2 = new Player(board2);
+
+    board2.receiveAttack("A1");
+    board2.receiveAttack("A2");
+
+    const move = player1.generateMove(board2);
+
+    const possibleMoves = player1.possibleMoves(board2);
+    
+    expect(possibleMoves).toContain(move);
+})
+
+test("generateMove returns valid coordinates for adjacent cells after hitting a ship", () => {
+    const board = new Gameboard();
+    const player1 = new Player(board);
+    
+    const board2 = new Gameboard();
+    const player2 = new Player(board2);
+    
+    const ship = new Ship(3);
+    board.placeShip(ship, "D1", "horizontal");
+    
+    player2.makeMove("D1", board); // makeMove to trigger addPendingTargets. (although )
+
+    const nextMove = player2.generateMove(board);
+
+    const expectedTargets = ["C1", "E1", "D2"]; 
+
+    expect(expectedTargets).toContain(nextMove);
+})
+

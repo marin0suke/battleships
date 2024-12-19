@@ -67,7 +67,7 @@ export default class Gameboard {
         if (targetCell.clicked) {
             throw new Error("This coordinate has already been attacked");
         }
-
+                        
         targetCell.clicked = true; 
 
         if (targetCell.occupied) {
