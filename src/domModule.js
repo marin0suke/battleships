@@ -1,5 +1,6 @@
-import Gameboard from "./gameBoard";
-import Player from "./player";
+import Gameboard from "./gameBoard.js";
+import Player from "./player.js";
+import Ship from "./ship.js"
 
 const domModule = (() => {
     function startGame() { // public method
@@ -26,19 +27,39 @@ const domModule = (() => {
         human.positionShips(testShipPositions);
         computer.positionShips(testShipPositions);
 
+        renderBoard(humanBoard, "human-board");
+        renderBoard(computerBoard, "computer-board", true);
+
     }
 
 
     // DOM METHODS:
 
-    renderBoard() {
-        
+    function renderBoard(board, elementId, hideShips = false) {
+        const boardElement = document.getElementById(elementId);
+        boardElement.innerHTML = ""; // clear previous content.
+
+        board.grid.forEach((row, rowIndex) => {
+            row.forEach((cell, colIndex) => {
+                const cellElement = document.createElement("div");
+                cellElement.classList.add("cell");
+                cellElement.dataset.coordinate = `${String.fromCharCode(65 + rowIndex)}${colIndex + 1}`;
+
+                // style the cell based on its state
+                if (cell.clicked) {
+                    cellElement.classList.add(cell.occupied ? "hit" : "miss"); // for styling ?
+                } else if (cell.occupied &&  !hideShips) {
+                    cellElement.classList.add("ship");
+                }
+
+                boardElement.appendChild(cellElement);
+            });
+        });
     }
 
 
     return {
-        startGame,
-
+        startGame
     };
 
 })();
