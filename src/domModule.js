@@ -15,7 +15,15 @@ const domModule = (() => {
 
         // add userinput ship placement and randomly generated ships later.
 
-        const testShipPositions = [ // temp.
+        const humanShipPositions = [ // temp.
+            { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
+            { ship: new Ship(4), coordinate: "B2", orientation: "vertical" },
+            { ship: new Ship(3), coordinate: "C3", orientation: "horizontal" },
+            { ship: new Ship(3), coordinate: "D4", orientation: "vertical" },
+            { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
+        ];
+
+        const computerShipPositions = [ // temp.
             { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
             { ship: new Ship(4), coordinate: "B2", orientation: "vertical" },
             { ship: new Ship(3), coordinate: "C3", orientation: "horizontal" },
@@ -27,8 +35,8 @@ const domModule = (() => {
         // const humanShipPositions = getUserShipPlacement() || generateRandomShipLayout();
         // const computerShipPositions = generateRandomShipLayout(); 
 
-        human.positionShips(testShipPositions);
-        computer.positionShips(testShipPositions);
+        human.positionShips(humanShipPositions);
+        computer.positionShips(computerShipPositions);
 
         renderBoard(humanBoard, "human-board");
         renderBoard(computerBoard, "computer-board", true);
@@ -45,6 +53,10 @@ const domModule = (() => {
         const coordinate = event.target.dataset.coordinate; // eg) "A1" 
 
         const result = human.makeMove(coordinate, computerBoard); // player attacks computer board.
+
+        console.log("Human Board State:", humanBoard);
+console.log("Computer Board State:", computerBoard);
+
 
         renderBoard(computerBoard, "computer-board", true); // render board with updated attack.
 

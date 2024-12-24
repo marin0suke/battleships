@@ -50,8 +50,8 @@ export default class Gameboard {
             const targetRow = orientation === "horizontal" ? rowIndex : rowIndex + i;
             const targetCol = orientation === "horizontal" ? colIndex + i : colIndex;
             
-            console.log(`Placing ship at: Row ${targetRow}, Col ${targetCol}`);
-            console.log(`Occupied Cell: `, this.grid[targetRow][targetCol]);
+            // console.log(`Placing ship at: Row ${targetRow}, Col ${targetCol}`);
+            // console.log(`Occupied Cell: `, this.grid[targetRow][targetCol]);
             this.grid[targetRow][targetCol].occupied = ship;
             this.ships.push(ship);
         }
@@ -84,7 +84,9 @@ export default class Gameboard {
     // would have to create new class to deal with all ship placement and tracking (assignment brief excludes this)
 
     areAllShipsSunk() {
-        return this.ships.every((ship) => ship.isSunk());
+        const allSunk = this.ships.every(ship => ship.isSunk());
+        console.log(`All ships sunk: ${allSunk}, Remaining ships: ${this.ships.filter(ship => !ship.isSunk()).length}`);
+        return allSunk;
     }
 }
 
