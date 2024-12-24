@@ -37,6 +37,11 @@ const domModule = (() => {
     }
 
     function handlePlayerAttack(event) {
+        const cell = event.target;
+
+        if (cell.classList.contains("clicked")) {
+            return;
+        }
         const coordinate = event.target.dataset.coordinate; // eg) "A1" 
 
         const result = human.makeMove(coordinate, computerBoard); // player attacks computer board.
@@ -55,7 +60,6 @@ const domModule = (() => {
 
     function handleComputerTurn() {
         const computerMove = computer.generateMove(humanBoard); // generates coord.
-
         const result = computer.makeMove(computerMove, humanBoard); // fires board state.
 
         renderBoard(humanBoard, "human-board");
@@ -99,10 +103,13 @@ const domModule = (() => {
     }
 
     function addAttackListeners() { 
-        const cells = document.querySelectorAll("#computer-board .cell");
-        cells.forEach(cell => {
-            cell.addEventListener("click", handlePlayerAttack);
-        });
+        const boardElement = document.getElementById("computer-board");
+
+        boardElement.addEventListener("click", event => {
+            if (event.target.classList.contains('cell')) {
+                handlePlayerAttack(event);
+            }
+        })
     }
 
     function disableBoardClicks() {
