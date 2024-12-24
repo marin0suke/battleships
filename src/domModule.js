@@ -3,12 +3,15 @@ import Player from "./player.js";
 import Ship from "./ship.js"
 
 const domModule = (() => {
-    function startGame() { // public method
-        const humanBoard = new Gameboard()
-        const human = new Player(humanBoard);
+    let human, computer;
+    let humanBoard, computerBoard;
 
-        const computerBoard = new Gameboard();
-        const computer = new Player(computerBoard);
+    function startGame() { // public method
+        humanBoard = new Gameboard()
+        human = new Player(humanBoard);
+
+        computerBoard = new Gameboard();
+        computer = new Player(computerBoard);
 
         // add userinput ship placement and randomly generated ships later.
 
@@ -30,6 +33,44 @@ const domModule = (() => {
         renderBoard(humanBoard, "human-board");
         renderBoard(computerBoard, "computer-board", true);
 
+        addAttackListeners();
+    }
+
+    function handlePlayerAttack(event) {
+        const coordinate = event.target.dataset.coordinate; // eg) "A1" 
+
+        const result = human.makeMove(coordinate, computerBoard); // player attacks computer board.
+
+        renderBoard(computerBoard, "computer-board", true); // render board with updated attack.
+
+        //check for win condition
+        if (computerBoard.areAllShipsSunk()) {
+            endGame("Player 1");
+            return;
+        }
+
+        //switch to computer's turn
+        handleComputerTurn();
+    }
+
+    function handleComputerTurn() {
+        const computerMove = computer.generateMove(humanBoard); // generates coord.
+
+        const result = computer.makeMove(computerMove, humanBoard); // fires board state.
+
+        renderBoard(humanBoard, "human-board");
+
+        if (humanBoard.areAllShipsSunk()) {
+            endGame("Computer");
+            return;
+        }
+    }
+
+    function endGame(winner) {
+        alert(`${winner} wins!`);
+        disableBoardClicks();
+
+        //to add restart game here / reset game.
     }
 
 
@@ -57,6 +98,19 @@ const domModule = (() => {
         });
     }
 
+    function addAttackListeners() { 
+        const cells = document.querySelectorAll("#computer-board .cell");
+        cells.forEach(cell => {
+            cell.addEventListener("click", handlePlayerAttack);
+        });
+    }
+
+    function disableBoardClicks() {
+        const cells = document.querySelectorAll("#computer-board .cell");
+        cells.forEach(cell => {
+            cell.removeEventListener("click", handlePlayerAttack);
+        })
+    }
 
     return {
         startGame
