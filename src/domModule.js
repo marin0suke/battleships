@@ -46,38 +46,47 @@ const domModule = (() => {
 
     function handlePlayerAttack(event) {
         const cell = event.target;
+        const coordinate = cell.dataset.coordinate; // eg) "A1" 
 
-        if (cell.classList.contains("clicked")) {
-            return;
+        const rowIndex = coordinate.charCodeAt(0) - 65; // add this block here so receiveAttack doesn't deal with it.
+        const colIndex = parseInt(coordinate.slice(1), 10) - 1;
+        const targetCell = computerBoard.grid[rowIndex][colIndex];
+    
+        if (targetCell.clicked) {
+            return; // Ignore the click if the cell has already been attacked
         }
-        const coordinate = event.target.dataset.coordinate; // eg) "A1" 
 
         const result = human.makeMove(coordinate, computerBoard); // player attacks computer board.
-
-        console.log("Human Board State:", humanBoard);
-console.log("Computer Board State:", computerBoard);
-
 
         renderBoard(computerBoard, "computer-board", true); // render board with updated attack.
 
         //check for win condition
         if (computerBoard.areAllShipsSunk()) {
-            endGame("Player 1");
+            setTimeout(() => {
+                endGame("Player 1");
+            }, 100); // slight delay
             return;
         }
 
         //switch to computer's turn
+        console.log("switching to computer turn");
         handleComputerTurn();
     }
 
     function handleComputerTurn() {
         const computerMove = computer.generateMove(humanBoard); // generates coord.
+
+
+
         const result = computer.makeMove(computerMove, humanBoard); // fires board state.
+
 
         renderBoard(humanBoard, "human-board");
 
         if (humanBoard.areAllShipsSunk()) {
-            endGame("Computer");
+            setTimeout(() => {
+                endGame("Computer");
+            }, 100); // slight delay
             return;
         }
     }
@@ -105,7 +114,8 @@ console.log("Computer Board State:", computerBoard);
                 // style the cell based on its state
                 if (cell.clicked) {
                     cellElement.classList.add(cell.occupied ? "hit" : "miss"); // for styling ?
-                } else if (cell.occupied &&  !hideShips) {
+                    cellElement.style.pointerEvents = "none"; // disable further clicks.
+                } else if (cell.occupied && !hideShips) {
                     cellElement.classList.add("ship");
                 }
 

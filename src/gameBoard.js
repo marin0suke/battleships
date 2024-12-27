@@ -64,12 +64,10 @@ export default class Gameboard {
 
         const targetCell = this.grid[rowIndex][colIndex]; // verbose so save.
 
-        if (targetCell.clicked) {
-            throw new Error("This coordinate has already been attacked");
-        }
-                        
-        targetCell.clicked = true; 
+       
+        targetCell.clicked = true;
 
+                        
         if (targetCell.occupied) {
             targetCell.occupied.hit(); // invokes hit function
             targetCell.hit = true; // updates hit prop on coordinate.
@@ -85,7 +83,6 @@ export default class Gameboard {
 
     areAllShipsSunk() {
         const allSunk = this.ships.every(ship => ship.isSunk());
-        console.log(`All ships sunk: ${allSunk}, Remaining ships: ${this.ships.filter(ship => !ship.isSunk()).length}`);
         return allSunk;
     }
 }

@@ -36,9 +36,11 @@ body {
 
 .cell.hit {
     background-color: red;
+    pointer-events: none;
 }
 
 .cell.miss {
     background-color: #ddd;
+    pointer-events: none;
 }
 
