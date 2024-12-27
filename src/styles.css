@@ -44,3 +44,7 @@ body {
     pointer-events: none;
 }
 
+#computer-board.disabled {
+    pointer-events: none;
+}
+

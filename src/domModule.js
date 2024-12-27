@@ -135,10 +135,8 @@ const domModule = (() => {
     }
 
     function disableBoardClicks() {
-        const cells = document.querySelectorAll("#computer-board .cell");
-        cells.forEach(cell => {
-            cell.removeEventListener("click", handlePlayerAttack);
-        })
+        const boardElement = document.querySelector("#computer-board");
+        boardElement.classList.add("disabled");
     }
 
     return {
