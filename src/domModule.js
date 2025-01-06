@@ -15,28 +15,38 @@ const domModule = (() => {
 
         // add userinput ship placement and randomly generated ships later.
 
-        const humanShipPositions = [ // temp.
-            { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
-            { ship: new Ship(4), coordinate: "B2", orientation: "vertical" },
-            { ship: new Ship(3), coordinate: "C3", orientation: "horizontal" },
-            { ship: new Ship(3), coordinate: "D4", orientation: "vertical" },
-            { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
+        // const humanShipPositions = [ // temp.
+        //     { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
+        //     { ship: new Ship(4), coordinate: "B2", orientation: "vertical" },
+        //     { ship: new Ship(3), coordinate: "C3", orientation: "horizontal" },
+        //     { ship: new Ship(3), coordinate: "D4", orientation: "vertical" },
+        //     { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
+        // ];
+
+        // const computerShipPositions = [ // temp.
+        //     { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
+        //     { ship: new Ship(4), coordinate: "B2", orientation: "vertical" },
+        //     { ship: new Ship(3), coordinate: "C3", orientation: "horizontal" },
+        //     { ship: new Ship(3), coordinate: "D4", orientation: "vertical" },
+        //     { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
+        // ];
+
+        const ships = [ // temp ship container for player.
+            { length: 5, orientation: "horizontal" },
+            { length: 4, orientation: "horizontal" },
+            { length: 3, orientation: "horizontal" },
+            { length: 3, orientation: "horizontal" },
+            { length: 2, orientation: "horizontal" },
         ];
 
-        const computerShipPositions = [ // temp.
-            { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
-            { ship: new Ship(4), coordinate: "B2", orientation: "vertical" },
-            { ship: new Ship(3), coordinate: "C3", orientation: "horizontal" },
-            { ship: new Ship(3), coordinate: "D4", orientation: "vertical" },
-            { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
-        ];
+        renderShipContainer(ships);
 
         // to create: getUserShipPlacement and generateRandomShipLayout.
         // const humanShipPositions = getUserShipPlacement() || generateRandomShipLayout();
         // const computerShipPositions = generateRandomShipLayout(); 
 
-        human.positionShips(humanShipPositions);
-        computer.positionShips(computerShipPositions);
+        // human.positionShips(humanShipPositions);
+        // computer.positionShips(computerShipPositions);
 
         renderBoard(humanBoard, "human-board");
         renderBoard(computerBoard, "computer-board", true);
@@ -75,8 +85,6 @@ const domModule = (() => {
 
     function handleComputerTurn() {
         const computerMove = computer.generateMove(humanBoard); // generates coord.
-
-
 
         const result = computer.makeMove(computerMove, humanBoard); // fires board state.
 
@@ -138,6 +146,23 @@ const domModule = (() => {
         const boardElement = document.querySelector("#computer-board");
         boardElement.classList.add("disabled");
     }
+
+    function renderShipContainer(ships) { // called in game start with array with appropriate ships.
+        const container = document.getElementById("ship-container");
+        container.innerHTML = ""; 
+
+        ships.forEach((ship, index) => { // array index.
+            const shipElement = document.createElement("div");
+            shipElement.classList.add("ship");
+            shipElement.setAttribute("draggable", true);
+            shipElement.dataset.length = ship.length;
+            shipElement.dataset.orientation = ship.orientation;
+            shipElement.dataset.index = index;
+            container.appendChild(shipElement);
+        });
+    }
+
+
 
     return {
         startGame
