@@ -5,6 +5,7 @@ import Ship from "./ship.js"
 const domModule = (() => {
     let human, computer;
     let humanBoard, computerBoard;
+    let draggedShip = null;
 
     function startGame() { // public method
         humanBoard = new Gameboard()
@@ -23,13 +24,13 @@ const domModule = (() => {
         //     { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
         // ];
 
-        // const computerShipPositions = [ // temp.
-        //     { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
-        //     { ship: new Ship(4), coordinate: "B2", orientation: "vertical" },
-        //     { ship: new Ship(3), coordinate: "C3", orientation: "horizontal" },
-        //     { ship: new Ship(3), coordinate: "D4", orientation: "vertical" },
-        //     { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
-        // ];
+        const computerShipPositions = [ // temp.
+            { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
+            { ship: new Ship(4), coordinate: "B2", orientation: "vertical" },
+            { ship: new Ship(3), coordinate: "C3", orientation: "horizontal" },
+            { ship: new Ship(3), coordinate: "D4", orientation: "vertical" },
+            { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
+        ];
 
         const ships = [ // temp ship container for player.
             { length: 5, orientation: "horizontal" },
@@ -46,12 +47,14 @@ const domModule = (() => {
         // const computerShipPositions = generateRandomShipLayout(); 
 
         // human.positionShips(humanShipPositions);
-        // computer.positionShips(computerShipPositions);
+        computer.positionShips(computerShipPositions);
 
         renderBoard(humanBoard, "human-board");
-        renderBoard(computerBoard, "computer-board", true);
+        renderBoard(computerBoard, "computer-board", true); 
 
         addAttackListeners();
+
+        addDragDropListeners();
     }
 
     function handlePlayerAttack(event) {
@@ -162,6 +165,53 @@ const domModule = (() => {
         });
     }
 
+    function addDragDropListeners() {
+        const shipElements = document.querySelectorAll(".ship");
+        const boardCells = document.querySelectorAll("#human-board .cell");
+
+        shipElements.forEach(ship => {
+            ship.addEventListener("dragstart", handleDragStart);
+        });
+
+        boardCells.forEach(cell => {
+            cell.addEventListener("dragover", handleDragOver);
+            cell.addEventListener("drop", handleDrop);
+        });
+    }
+
+    function handleDragStart(event) {
+        const { length, orientation, index } = event.target.dataset;
+        draggedShip = {
+            length: parseInt(length), // data attributes always stored as a string in DOM so have to convert back.
+            orientation,
+            index,
+            element: event.target,
+        };
+    }
+
+    function handleDragOver(event) {
+        event.preventDefault(); // allows dropping.
+    }
+
+    function handleDrop(event) {
+        if (!draggedShip) return; // if there is no obj 
+
+        const coordinate = event.target.dataset.coordinate;
+        const { length, orientation } = draggedShip;
+
+        try {
+            const ship = new Ship(length);
+            humanBoard.placeShip(ship, coordinate, orientation);
+
+            renderBoard(humanBoard, "human-board");
+
+            // remove dragged ship from the container.
+            draggedShip.element.remove();
+            draggedShip = null; // reset draggedShip.
+        } catch (error) {
+            alert(error.message); 
+        }
+    }
 
 
     return {
