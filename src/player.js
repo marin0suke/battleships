@@ -52,14 +52,6 @@ export default class Player {
     }     
 
     generateMove(opponentBoard) {
-        // this.pendingTargets = this.pendingTargets.filter((target) => { // filters pendingTarget to remove clicked cell (incase last turn it was clicked).
-        //     const [row, col] = [
-        //         target.charCodeAt(0) - 65,
-        //         parseInt(target.slice(1), 10) - 1
-        //     ];
-        //     return !opponentBoard.grid[row][col].clicked;
-        // });
-
         if (this.pendingTargets.length > 0) { // if there is something in pendingTargets, means we have hit something and need to attack adjacent instead of random.
             return this.pendingTargets.pop();
         }
