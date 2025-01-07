@@ -63,6 +63,16 @@ body {
     display: inline-block;
 }
 
+.ship.horizontal {
+    width: calc(var(--ship-length) * 30px);
+    height: 30px;
+}
+
+.ship.vertical {
+    width: 30px;
+    height: calc(var(--ship-length) * 30px); /* Length affects height */
+}
+
 .ship[data-length="2"] { width: 60px; background-color: pink;}
 .ship[data-length="3"] { width: 90px; background-color: rgb(236, 101, 101);}
 .ship[data-length="4"] { width: 120px; background-color: rgb(149, 160, 237);}

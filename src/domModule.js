@@ -42,6 +42,7 @@ const domModule = (() => {
 
         addResetButton();
         addConfirmPlacementButton();
+        addFlipButtonListener();
 
         // to create: getUserShipPlacement and generateRandomShipLayout.
         // const humanShipPositions = getUserShipPlacement() || generateRandomShipLayout();
@@ -160,8 +161,8 @@ const domModule = (() => {
             shipElement.classList.add("ship");
             shipElement.setAttribute("draggable", true);
             shipElement.dataset.length = ship.length;
-            shipElement.dataset.orientation = ship.orientation;
-            shipElement.dataset.index = index;
+            shipElement.dataset.orientation = "horizontal"; // default
+            shipElement.style.setProperty("--ship-length", ship.length);
             container.appendChild(shipElement);
         });
 
@@ -253,6 +254,36 @@ const domModule = (() => {
         }
     }
 
+    function flipShips() {
+        const ships = document.querySelectorAll(".ship");
+
+        ships.forEach((ship) => {
+            const currentOrientation = ship.dataset.orientation;
+            const newOrientation = currentOrientation === "horizontal" ? "vertical" : "horizontal"; 
+            ship.dataset.orientation = newOrientation;
+
+            ship.classList.remove("horizontal", "vertical");
+            ship.classList.add(newOrientation);
+
+            const shipLength = parseInt(ship.dataset.length, 10);
+            if (newOrientation === "horizontal") {
+                ship.style.width = `${shipLength * 30}px`;
+                ship.style.height = "30px";
+            } else {
+                ship.style.width = "30px";
+                ship.style.height = `${shipLength * 30}px`;
+            }
+        });
+
+     
+    }
+
+    function addFlipButtonListener() {
+        const flipButton = document.querySelector("#flip-orientation");
+
+        flipButton.addEventListener("click", flipShips);
+    }
+
     function addConfirmPlacementButton() {
         const confirmButton = document.querySelector("#confirm-placement");
 
@@ -282,7 +313,6 @@ const domModule = (() => {
 
         startGame();
     }
-
 
 
     function addResetButton() {
