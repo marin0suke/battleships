@@ -37,6 +37,9 @@ const domModule = (() => {
 
         renderShipContainer(ships);
 
+        const confirmButton = document.querySelector("#confirm-placement");
+        confirmButton.disabled = true; 
+
         addResetButton();
         addConfirmPlacementButton();
 
@@ -46,7 +49,7 @@ const domModule = (() => {
         
     }
 
-    function checkAllShipsPlaced() {
+    function checkAllShipsPlaced() { // 
         const totalShips = 5;
         return humanBoard.ships.length === totalShips;
     }
@@ -128,7 +131,7 @@ const domModule = (() => {
             });
         });
 
-        if (!checkAllShipsPlaced()) {
+        if (!checkAllShipsPlaced()) { // to update - if startgame hasn't been clicked? reattach.
             addDragDropListeners();
         }
     }
@@ -181,8 +184,8 @@ const domModule = (() => {
         });
 
         function handleDragStart(event) {
-            console.log("dragging started", event.target.dataset);
-            const { length, orientation, index } = event.target.dataset;
+
+            const { length, orientation } = event.target.dataset;
     
             const rect = event.target.getBoundingClientRect(); // get position and size of element relative to viewport.
             const cursorOffsetX = event.clientX - rect.left; // get offset from cursor (clientX) from left edge of element.
@@ -191,19 +194,16 @@ const domModule = (() => {
             draggedShip = {
                 length: parseInt(length), // data attributes always stored as a string in DOM so have to convert back.
                 orientation,
-                index,
                 element: event.target,
                 cursorOffsetX,
                 cursorOffsetY,
             };
-            console.log("current dragged ship:",draggedShip);
         }
     
         function handleDragOver(event) {
             event.preventDefault(); // allows dropping.
             if (!draggedShip) return;
 
-            console.log("currently DRAGGING,", draggedShip);
             
         }
     
@@ -240,19 +240,14 @@ const domModule = (() => {
                     draggedShip.orientation
                 );
                 
-                console.log("dropping ship", draggedShip);
                 renderBoard(humanBoard, "human-board");
                 draggedShip.element.remove();
                 draggedShip = null; 
-                console.log(draggedShip);
 
-                if (checkAllShipsPlaced()) {
-                    console.log("all ships placed. starting GAME");
-                    document.querySelector("#confirm-placement").disabled = false;
-                }
+                const confirmButton = document.querySelector("#confirm-placement");
+                confirmButton.disabled = !checkAllShipsPlaced(); // dynamically update confirm button.
 
             } catch (error) {
-                console.log("didn't work - can't drop.");
                 alert(error.message); 
             }
         }
@@ -260,7 +255,32 @@ const domModule = (() => {
 
     function addConfirmPlacementButton() {
         const confirmButton = document.querySelector("#confirm-placement");
-        confirmButton.addEventListener("click", addAttackListeners);
+
+        const handleConfirmClick = () => {
+            if (checkAllShipsPlaced()) {
+                addAttackListeners();
+                confirmButton.disabled = true;
+            } else {
+                alert("Please place all ships before starting the game");
+            }
+        }
+
+        confirmButton.removeEventListener("click", handleConfirmClick);
+
+        confirmButton.addEventListener("click", handleConfirmClick);
+
+    }
+
+    function resetGame() {
+        document.querySelector("#human-board").innerHTML = "";
+        document.querySelector("#computer-board").innerHTML = "";
+        document.querySelector("#ship-container").innerHTML = "";
+
+        const computerBoardElement = document.querySelector("#computer-board");
+        const newBoardElement = computerBoardElement.cloneNode(true); // clone and replace to remove listeners.
+        computerBoardElement.parentNode.replaceChild(newBoardElement, computerBoardElement);
+
+        startGame();
     }
 
 
@@ -268,7 +288,10 @@ const domModule = (() => {
     function addResetButton() {
         const resetButton = document.querySelector("#reset-game");
 
-        resetButton.addEventListener("click", startGame);
+        const newResetButton = resetButton.cloneNode(true);
+        resetButton.parentNode.replaceChild(newResetButton, resetButton);
+
+        newResetButton.addEventListener("click", resetGame);
     }
     
     return {
