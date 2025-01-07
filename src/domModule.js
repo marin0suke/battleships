@@ -38,6 +38,7 @@ const domModule = (() => {
         renderShipContainer(ships);
 
         addResetButton();
+        addConfirmPlacementButton();
 
         // to create: getUserShipPlacement and generateRandomShipLayout.
         // const humanShipPositions = getUserShipPlacement() || generateRandomShipLayout();
@@ -247,7 +248,7 @@ const domModule = (() => {
 
                 if (checkAllShipsPlaced()) {
                     console.log("all ships placed. starting GAME");
-                    addAttackListeners();
+                    document.querySelector("#confirm-placement").disabled = false;
                 }
 
             } catch (error) {
@@ -256,6 +257,13 @@ const domModule = (() => {
             }
         }
     }
+
+    function addConfirmPlacementButton() {
+        const confirmButton = document.querySelector("#confirm-placement");
+        confirmButton.addEventListener("click", addAttackListeners);
+    }
+
+
 
     function addResetButton() {
         const resetButton = document.querySelector("#reset-game");
