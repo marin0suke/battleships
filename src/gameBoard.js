@@ -23,6 +23,9 @@ export default class Gameboard {
         const rowIndex = coordinate.charCodeAt(0) - 65;
         const colIndex = parseInt(coordinate.slice(1)) - 1; 
 
+        console.log(`Placing ship at ${coordinate}, orientation: ${orientation}`);
+        console.log("Initial board state:", this.grid);
+
         if (orientation !== "horizontal" && orientation !== "vertical") {
             throw new Error("Orientation must be 'horizontal' or 'vertical'");
         }
@@ -53,8 +56,9 @@ export default class Gameboard {
             // console.log(`Placing ship at: Row ${targetRow}, Col ${targetCol}`);
             // console.log(`Occupied Cell: `, this.grid[targetRow][targetCol]);
             this.grid[targetRow][targetCol].occupied = ship;
-            this.ships.push(ship);
         }
+
+        this.ships.push(ship);
     }
 
     receiveAttack(coordinate) {

@@ -13,15 +13,8 @@ const domModule = (() => {
         computerBoard = new Gameboard();
         computer = new Player(computerBoard);
 
-        // add userinput ship placement and randomly generated ships later.
-
-        // const humanShipPositions = [ // temp.
-        //     { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
-        //     { ship: new Ship(4), coordinate: "B2", orientation: "vertical" },
-        //     { ship: new Ship(3), coordinate: "C3", orientation: "horizontal" },
-        //     { ship: new Ship(3), coordinate: "D4", orientation: "vertical" },
-        //     { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
-        // ];
+        renderBoard(humanBoard, "human-board");
+        renderBoard(computerBoard, "computer-board", true); 
 
         const computerShipPositions = [ // temp.
             { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
@@ -30,6 +23,9 @@ const domModule = (() => {
             { ship: new Ship(3), coordinate: "D4", orientation: "vertical" },
             { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
         ];
+
+        computer.positionShips(computerShipPositions); // temp.
+
 
         const ships = [ // temp ship container for player.
             { length: 5, orientation: "horizontal" },
@@ -44,16 +40,12 @@ const domModule = (() => {
         // to create: getUserShipPlacement and generateRandomShipLayout.
         // const humanShipPositions = getUserShipPlacement() || generateRandomShipLayout();
         // const computerShipPositions = generateRandomShipLayout(); 
+        
+    }
 
-        // human.positionShips(humanShipPositions);
-        computer.positionShips(computerShipPositions);
-
-        renderBoard(humanBoard, "human-board");
-        renderBoard(computerBoard, "computer-board", true); 
-
-        addAttackListeners();
-
-        addDragDropListeners();
+    function checkAllShipsPlaced() {
+        const totalShips = 5;
+        return humanBoard.ships.length === totalShips;
     }
 
     function handlePlayerAttack(event) {
@@ -132,6 +124,10 @@ const domModule = (() => {
                 boardElement.appendChild(cellElement);
             });
         });
+
+        if (!checkAllShipsPlaced()) {
+            addDragDropListeners();
+        }
     }
 
     function addAttackListeners() { 
@@ -162,6 +158,8 @@ const domModule = (() => {
             shipElement.dataset.index = index;
             container.appendChild(shipElement);
         });
+
+        addDragDropListeners();
     }
 
     function addDragDropListeners() {
@@ -180,6 +178,7 @@ const domModule = (() => {
         });
 
         function handleDragStart(event) {
+            console.log("dragging started", event.target.dataset);
             const { length, orientation, index } = event.target.dataset;
     
             const rect = event.target.getBoundingClientRect(); // get position and size of element relative to viewport.
@@ -194,11 +193,14 @@ const domModule = (() => {
                 cursorOffsetX,
                 cursorOffsetY,
             };
+            console.log("current dragged ship:",draggedShip);
         }
     
         function handleDragOver(event) {
             event.preventDefault(); // allows dropping.
             if (!draggedShip) return;
+
+            console.log("currently DRAGGING,", draggedShip);
             
         }
     
@@ -234,21 +236,25 @@ const domModule = (() => {
                     adjustedCoordinate,
                     draggedShip.orientation
                 );
-    
+                
+                console.log("dropping ship", draggedShip);
                 renderBoard(humanBoard, "human-board");
                 draggedShip.element.remove();
                 draggedShip = null; 
+                console.log(draggedShip);
 
-                
+                if (checkAllShipsPlaced()) {
+                    console.log("all ships placed. starting GAME");
+                    addAttackListeners();
+                }
+
             } catch (error) {
+                console.log("didn't work - can't drop.");
                 alert(error.message); 
             }
         }
     }
-
     
-
-
     return {
         startGame
     };
