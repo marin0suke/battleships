@@ -14,28 +14,26 @@ const domModule = (() => {
         computer = new Player(computerBoard);
 
         renderBoard(humanBoard, "human-board");
-        renderBoard(computerBoard, "computer-board", true); 
+        renderBoard(computerBoard, "computer-board"); 
 
-        const computerShipPositions = [ // temp.
-            { ship: new Ship(5), coordinate: "A1", orientation: "horizontal" },
-            { ship: new Ship(4), coordinate: "B2", orientation: "vertical" },
-            { ship: new Ship(3), coordinate: "C3", orientation: "horizontal" },
-            { ship: new Ship(3), coordinate: "D4", orientation: "vertical" },
-            { ship: new Ship(2), coordinate: "E5", orientation: "horizontal" },
+        const computerShips = [
+            { length: 5 },
+            { length: 4 },
+            { length: 3 },
+            { length: 3 },
+            { length: 2 },
         ];
+        generateRandomShipLayout(computerBoard, computerShips);
 
-        computer.positionShips(computerShipPositions); // temp.
 
-
-        const ships = [ // temp ship container for player.
+        const playerShips = [ // temp ship container for player.
             { length: 5, orientation: "horizontal" },
             { length: 4, orientation: "horizontal" },
             { length: 3, orientation: "horizontal" },
             { length: 3, orientation: "horizontal" },
             { length: 2, orientation: "horizontal" },
         ];
-
-        renderShipContainer(ships);
+        renderShipContainer(playerShips);
 
         const confirmButton = document.querySelector("#confirm-placement");
         confirmButton.disabled = true; 
@@ -53,6 +51,31 @@ const domModule = (() => {
     function checkAllShipsPlaced() { // 
         const totalShips = 5;
         return humanBoard.ships.length === totalShips;
+    }
+
+    function generateRandomShipLayout(board, ships) {
+        const directions = ["horizontal", "vertical"]; // will randomly choose
+        const boardSize = board.grid.length; // on the board we are using.
+
+        ships.forEach((ship) => { // ship array passed - for each ship
+            let placed = false; 
+
+            while (!placed) { // keep trying to place the ship until successfully placed. 
+                const orientation = directions[Math.floor(Math.random() * directions.length)]; // randomly select orientation. outputs 1 or 2.
+
+                const rowIndex = Math.floor(Math.random() * boardSize); // generates 0 - 9 randomly.
+                const colIndex = Math.floor(Math.random() * boardSize);
+
+                const coordinate = `${String.fromCharCode(65 + rowIndex)}${colIndex + 1}`; // takes random ints and turns row into ASCII letter, and + 1 for col since indexed.
+
+                try {
+                    board.placeShip(new Ship(ship.length), coordinate, orientation); // validation in placeShip.
+                    placed = true; // change flag when successful.
+                } catch (error) {
+                   // silent error catch and retry placement.
+                }
+            }
+        });
     }
 
     function handlePlayerAttack(event) {

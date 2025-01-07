@@ -51,9 +51,15 @@ body {
 
 .ship-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allows ships to wrap inside the container */
+    justify-content: space-between; /* Space out ships evenly */
+    align-items: center; /* Align ships vertically */
+    width: 300px; /* Fixed width for the container */
+    height: 150px; /* Fixed height for the container */
+    overflow: hidden; /* Prevent ships from overflowing */
+    box-sizing: border-box; /* Include padding and border in the size */
     gap: 10px;
-    margin-bottom: 20px;
+
 }
 
 .ship {
