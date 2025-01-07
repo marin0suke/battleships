@@ -5,7 +5,6 @@ import Ship from "./ship.js"
 const domModule = (() => {
     let human, computer;
     let humanBoard, computerBoard;
-    let draggedShip = null;
 
     function startGame() { // public method
         humanBoard = new Gameboard()
@@ -166,6 +165,8 @@ const domModule = (() => {
     }
 
     function addDragDropListeners() {
+        let draggedShip = null;
+
         const shipElements = document.querySelectorAll(".ship");
         const boardCells = document.querySelectorAll("#human-board .cell");
 
@@ -177,69 +178,75 @@ const domModule = (() => {
             cell.addEventListener("dragover", handleDragOver);
             cell.addEventListener("drop", handleDrop);
         });
-    }
 
-    function handleDragStart(event) {
-        const { length, orientation, index } = event.target.dataset;
-
-        const rect = event.target.getBoundingClientRect(); // get position and size of element relative to viewport.
-        const cursorOffsetX = event.clientX - rect.left; // get offset from cursor (clientX) from left edge of element.
-        const cursorOffsetY = event.clientY - rect.top; // get offset from cursor to top edge of element.
-
-        draggedShip = {
-            length: parseInt(length), // data attributes always stored as a string in DOM so have to convert back.
-            orientation,
-            index,
-            element: event.target,
-            cursorOffsetX,
-            cursorOffsetY,
-        };
-    }
-
-    function handleDragOver(event) {
-        event.preventDefault(); // allows dropping.
-
-    }
-
-    function handleDrop(event) {
-        if (!draggedShip) return; // if there is no obj 
-
-        const { length, orientation } = draggedShip; // destructure.
-
-        //get bounding box of target cell.
-        const targetCellRect = event.target.getBoundingClientRect(); // gets dimensions and position of the cell the ship is being dropped on relative to the viewport.
-
-        let adjustedRowIndex = event.target.dataset.coordinate.charCodeAt(0) - 65; // get letter for row.
-        let adjustedColIndex = parseInt(event.target.dataset.coordinate.slice(1), 10) - 1; // get num for col.
-
-        const cellWidth = targetCellRect.width; // width of element of target cell for alignment calcs.
-        const cellHeight = targetCellRect.height; // same for height.
-
-        if (orientation === "horizontal") { // adjust for drag offset. 
-            const startColOffset = Math.floor(draggedShip.cursorOffsetX / cellWidth); // calc how many grid cells the offset corresponds to.
-            adjustedColIndex -= startColOffset; // shifts start column index backward by above to align correctly.
-        } else if (orientation === "vertical") {
-            const startRowOffset = Math.floor(draggedShip.cursorOffsetY / cellHeight);
-            adjustedRowIndex -= startRowOffset;
+        function handleDragStart(event) {
+            const { length, orientation, index } = event.target.dataset;
+    
+            const rect = event.target.getBoundingClientRect(); // get position and size of element relative to viewport.
+            const cursorOffsetX = event.clientX - rect.left; // get offset from cursor (clientX) from left edge of element.
+            const cursorOffsetY = event.clientY - rect.top; // get offset from cursor to top edge of element.
+    
+            draggedShip = {
+                length: parseInt(length), // data attributes always stored as a string in DOM so have to convert back.
+                orientation,
+                index,
+                element: event.target,
+                cursorOffsetX,
+                cursorOffsetY,
+            };
         }
+    
+        function handleDragOver(event) {
+            event.preventDefault(); // allows dropping.
+            if (!draggedShip) return;
+            
+        }
+    
+        function handleDrop(event) {
+            if (!draggedShip) return; // if there is no obj 
+    
+            const { length, orientation } = draggedShip; // destructure.
+    
+            //get bounding box of target cell.
+            const targetCellRect = event.target.getBoundingClientRect(); // gets dimensions and position of the cell the ship is being dropped on relative to the viewport.
+    
+            let adjustedRowIndex = event.target.dataset.coordinate.charCodeAt(0) - 65; // get letter for row.
+            let adjustedColIndex = parseInt(event.target.dataset.coordinate.slice(1), 10) - 1; // get num for col.
+    
+            const cellWidth = targetCellRect.width; // width of element of target cell for alignment calcs.
+            const cellHeight = targetCellRect.height; // same for height.
+    
+            if (orientation === "horizontal") { // adjust for drag offset. 
+                const startColOffset = Math.floor(draggedShip.cursorOffsetX / cellWidth); // calc how many grid cells the offset corresponds to.
+                adjustedColIndex -= startColOffset; // shifts start column index backward by above to align correctly.
+            } else if (orientation === "vertical") {
+                const startRowOffset = Math.floor(draggedShip.cursorOffsetY / cellHeight);
+                adjustedRowIndex -= startRowOffset;
+            }
+    
+            const adjustedCoordinate = `${String.fromCharCode(65 + adjustedRowIndex)}${adjustedColIndex + 1}`;
+            
+    
+    
+            try {
+                humanBoard.placeShip( // use placeShip for validation.
+                    new Ship(draggedShip.length),
+                    adjustedCoordinate,
+                    draggedShip.orientation
+                );
+    
+                renderBoard(humanBoard, "human-board");
+                draggedShip.element.remove();
+                draggedShip = null; 
 
-        const adjustedCoordinate = `${String.fromCharCode(65 + adjustedRowIndex)}${adjustedColIndex + 1}`;
-        
-
-
-        try {
-            const ship = new Ship(length);
-            humanBoard.placeShip(ship, adjustedCoordinate, orientation);
-
-            renderBoard(humanBoard, "human-board");
-
-            // remove dragged ship from the container.
-            draggedShip.element.remove();
-            draggedShip = null; // reset draggedShip.
-        } catch (error) {
-            alert(error.message); 
+                
+            } catch (error) {
+                alert(error.message); 
+            }
         }
     }
+
+    
 
 
     return {
