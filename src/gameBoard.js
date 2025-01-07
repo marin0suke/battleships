@@ -23,9 +23,6 @@ export default class Gameboard {
         const rowIndex = coordinate.charCodeAt(0) - 65;
         const colIndex = parseInt(coordinate.slice(1)) - 1; 
 
-        console.log(`Placing ship at ${coordinate}, orientation: ${orientation}`);
-        console.log("Initial board state:", this.grid);
-
         if (orientation !== "horizontal" && orientation !== "vertical") {
             throw new Error("Orientation must be 'horizontal' or 'vertical'");
         }

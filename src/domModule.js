@@ -37,6 +37,8 @@ const domModule = (() => {
 
         renderShipContainer(ships);
 
+        addResetButton();
+
         // to create: getUserShipPlacement and generateRandomShipLayout.
         // const humanShipPositions = getUserShipPlacement() || generateRandomShipLayout();
         // const computerShipPositions = generateRandomShipLayout(); 
@@ -253,6 +255,12 @@ const domModule = (() => {
                 alert(error.message); 
             }
         }
+    }
+
+    function addResetButton() {
+        const resetButton = document.querySelector("#reset-game");
+
+        resetButton.addEventListener("click", startGame);
     }
     
     return {
