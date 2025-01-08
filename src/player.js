@@ -20,13 +20,13 @@ export default class Player {
     makeMove(coordinate, opponentBoard) { // NF: gameplay. goal - call receiveAttack on opponentboard.
         if (!opponentBoard) throw new Error("Opponent's board required to make a move");
 
-        const result = opponentBoard.receiveAttack(coordinate);
+        const { result, sunk } = opponentBoard.receiveAttack(coordinate);
 
-        if (result === "Hit!") {
+        if (result === "Hit!" && !sunk) {
             this.addPendingTargets(coordinate, opponentBoard);
         }
 
-        return result; // returns attack on opponent board. receiveAttack will return hit or miss string.
+        return { result, sunk }; // returns attack on opponent board. receiveAttack will return hit or miss string.
     }
 
     isDefeated() { // NF: win/loss condition. call areAllShipsSunk on this players board.

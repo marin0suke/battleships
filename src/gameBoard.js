@@ -72,13 +72,11 @@ export default class Gameboard {
         if (targetCell.occupied) {
             targetCell.occupied.hit(); // invokes hit function
             targetCell.hit = true; // updates hit prop on coordinate.
-            if (targetCell.occupied.isSunk()) {
-                console.log("Ship is sunk!");
-            }
-            return "Hit!"; 
+            const sunk = targetCell.occupied.isSunk();
+            return { result: "Hit!", sunk}; // detect whether ship is sunk after an attack.
         } else {
             this.missedShots.push(coordinate);
-            return "Miss!"; 
+            return { result: "Miss!", sunk: false };
         }
     }
 

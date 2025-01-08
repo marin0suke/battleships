@@ -110,10 +110,15 @@ const domModule = (() => {
     function handleComputerTurn() {
         const computerMove = computer.generateMove(humanBoard); // generates coord.
 
-        const result = computer.makeMove(computerMove, humanBoard); // fires board state.
+        const { result, sunk } = computer.makeMove(computerMove, humanBoard); // fires board state.
 
 
         renderBoard(humanBoard, "human-board");
+
+        if (sunk) {
+            console.log("ship sunk! Clearing target queue");
+            computer.pendingTargets = []; 
+        }
 
         if (humanBoard.areAllShipsSunk()) {
             setTimeout(() => {
