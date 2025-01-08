@@ -14,7 +14,7 @@ const domModule = (() => {
         computer = new Player(computerBoard);
 
         renderBoard(humanBoard, "human-board");
-        renderBoard(computerBoard, "computer-board"); 
+        renderBoard(computerBoard, "computer-board", true); 
 
         const computerShips = [
             { length: 5 },
@@ -145,7 +145,15 @@ const domModule = (() => {
 
                 // style the cell based on its state
                 if (cell.clicked) {
-                    cellElement.classList.add(cell.occupied ? "hit" : "miss"); // for styling ?
+                    if (cell.occupied) {
+                        if (cell.occupied.isSunk()) {
+                            cellElement.classList.add("sunken");
+                        } else {
+                            cellElement.classList.add("hit");
+                        }
+                    } else {
+                        cellElement.classList.add("miss");
+                    }
                     cellElement.style.pointerEvents = "none"; // disable further clicks.
                 } else if (cell.occupied && !hideShips) {
                     cellElement.classList.add("ship");
