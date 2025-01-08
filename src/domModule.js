@@ -131,8 +131,6 @@ const domModule = (() => {
     function endGame(winner) {
         alert(`${winner} wins!`);
         disableBoardClicks();
-
-        //to add restart game here / reset game.
     }
 
 
@@ -186,6 +184,11 @@ const domModule = (() => {
     function disableBoardClicks() {
         const boardElement = document.querySelector("#computer-board");
         boardElement.classList.add("disabled");
+    }
+
+    function enableBoardClicks() {
+        const boardElement = document.querySelector("#computer-board");
+        boardElement.classList.remove("disabled");
     }
 
     function renderShipContainer(ships) { // called in game start with array with appropriate ships.
@@ -347,17 +350,15 @@ const domModule = (() => {
         const newBoardElement = computerBoardElement.cloneNode(true); // clone and replace to remove listeners.
         computerBoardElement.parentNode.replaceChild(newBoardElement, computerBoardElement);
 
+        enableBoardClicks();
+
         startGame();
     }
 
 
     function addResetButton() {
         const resetButton = document.querySelector("#reset-game");
-
-        const newResetButton = resetButton.cloneNode(true);
-        resetButton.parentNode.replaceChild(newResetButton, resetButton);
-
-        newResetButton.addEventListener("click", resetGame);
+        resetButton.addEventListener("click", resetGame);
     }
     
     return {
